@@ -27,7 +27,7 @@ hr{
 
 .teacher-info {
 	text-align: center;
-	padding: 2em 2em;
+	padding: 2.322em 2em;
 }
 
 .teacher-profile-img {
@@ -49,6 +49,11 @@ hr{
 .criteria-checkbox {
 	width: 2em;
     height: 2em;
+}
+
+.reviews {
+	padding: 0 20%;
+    font-weight: bold;
 }
 
 .good-review {

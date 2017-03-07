@@ -1,11 +1,7 @@
 "use strict";
 var mongoose = require("mongoose");
 var reviewSchema = mongoose.Schema({
-	criteria_1:Number,
-	criteria_2:Number,
-	criteria_3:Number,
-	criteria_4:Number,
-	criteria_5:Number,
+	criterias:[{selection:Number, description:String}],
 	totalScore:Number,
 	comments:String
 });

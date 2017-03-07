@@ -7,16 +7,27 @@ var criteriaAmount = 5;
 module.exports = React.createClass({
     getInitialState:function(){
       return {
-          criteria_1:0,
-          criteria_2:0,
-          criteria_3:0,
-          criteria_4:0,
-          criteria_5:0,
-          criteria_1_desc:"",//Terminar de cuadrar esto para pasarlo por props
-          criteria_2_desc:"",
-          criteria_3_desc:"",
-          criteria_4_desc:"",
-          criteria_5_desc:"",
+          criterias:[{
+                        selection:0,
+                        description:"Uses different approaches of teaching"
+                      },
+                      {
+                        selection:0,
+                        description:"Always willing to help the students"
+                      },
+                      {
+                        selection:0,
+                        description:"Work load from projects, lectures, etc. is moderate"
+                      },
+                      {
+                        selection:0,
+                        description:"Evaluation is according to what is taught"
+                      },
+                      {
+                        selection:0,
+                        description:"Well organized and punctual"
+                      },
+                    ],
           totalScore:0,
           comments:""
       }  
@@ -28,30 +39,54 @@ module.exports = React.createClass({
 
         //Reinitialize for a new review
         starCount = 0;
+        document.getElementById("stars-img").src ="./img/0_star.png";
+        for (var i = 1; i <= this.state.criterias.length; i++) {
+          document.getElementById("criteria_"+i).checked = false;
+        }         
+        document.getElementById("comments").value = "";
+        this.state.comments = "";
+        window.location.replace('#reviews-div');
     },
     handleInputChange:function(e){
-      var name = e.target.name;
       var state = this.state;
+      var name = e.target.name;
+      var criterias = this.state.criterias;
       var stateValue = 0;
       
       if(name === "comments"){
         e.preventDefault();
-        stateValue = e.target.value;
+        state.comments = e.target.value;
       }
       else{
         if (e.target.checked) {
           starCount++;
           stateValue = 1;
+          criterias[name.split("_")[1]-1].selection = stateValue;
         }
         else{
           starCount--;
         }
       }
       document.getElementById("stars-img").src ="./img/"+starCount+"_star.png";
-      state[name] = stateValue;
       this.setState(state);
     },
     render:function(){
+      var rows = [];
+      var criterias = this.state.criterias;
+      for (var i = 0; i < criterias.length; i++) {
+        rows.push(
+            <div className="form-group" key={"criteria_form_group_"+(i+1)}>
+              <div className="row" key={"criteria_row_"+(i+1)}>
+                <div className="col-md-11" key={"criteria_label_"+(i+1)}>
+                  <label className="control-label" key={"criteria_control_label_"+(i+1)} htmlFor={"criteria_"+(i+1)}>{criterias[i].description}</label>
+                </div>
+                <div className="col-md-1 text-right" key={"criteria_text_right_"+(i+1)}> 
+                  <input type="checkbox" className="criteria-checkbox" key={"criteria_checkbox"+(i+1)} id={"criteria_"+(i+1)} name={"criteria_"+(i+1)} value={criterias[i].selection} onChange={this.handleInputChange} />
+                </div>
+              </div>
+            </div>
+          );
+      }
         return(
           <div className="jumbotron">
             <div className="row text-center">
@@ -61,62 +96,13 @@ module.exports = React.createClass({
               <hr/>
             </div>
             <form className="form" onSubmit={this.addReview}>
-              <div className="form-group">
-                <div className="row">
-                  <div className="col-md-6">
-                    <label className="control-label" htmlFor="criteria_1">Criteria 1:</label>
-                  </div>
-                  <div className="col-md-6 text-right"> 
-                    <input type="checkbox" className="criteria-checkbox" id="criteria_1" name="criteria_1" value={this.state.criteria_1} onChange={this.handleInputChange} />
-                  </div>
-                </div>
-              </div>
-              <div className="form-group">
-                <div className="row">
-                  <div className="col-md-6">
-                    <label className="control-label" htmlFor="criteria_2">Criteria 2:</label>
-                  </div>
-                  <div className="col-md-6 text-right"> 
-                    <input type="checkbox" className="criteria-checkbox" id="criteria_2" name="criteria_2" value={this.state.criteria_2} onChange={this.handleInputChange} />                    
-                  </div>
-                </div>
-              </div>
-              <div className="form-group">
-                <div className="row">
-                  <div className="col-md-6">
-                    <label className="control-label" htmlFor="criteria_3">Criteria 3:</label>
-                  </div>
-                  <div className="col-md-6 text-right"> 
-                    <input type="checkbox" className="criteria-checkbox" id="criteria_3" name="criteria_3" value={this.state.criteria_3} onChange={this.handleInputChange} />                    
-                  </div>
-                </div>
-              </div>
-              <div className="form-group">
-                <div className="row">
-                  <div className="col-md-6">
-                    <label className="control-label" htmlFor="criteria_4">Criteria 4:</label>
-                  </div>
-                  <div className="col-md-6 text-right"> 
-                    <input type="checkbox" className="criteria-checkbox" id="criteria_4" name="criteria_4" value={this.state.criteria_4} onChange={this.handleInputChange} />                    
-                  </div>
-                </div>
-              </div>
-              <div className="form-group">
-                <div className="row">
-                  <div className="col-md-6">
-                    <label className="control-label" htmlFor="criteria_5">Criteria 5:</label>
-                  </div>
-                  <div className="col-md-6 text-right"> 
-                    <input type="checkbox" className="criteria-checkbox" id="criteria_5" name="criteria_5" value={this.state.criteria_5} onChange={this.handleInputChange} />                    
-                  </div>
-                </div>
-              </div>
+              {rows}               
               <div className="form-group">
                 <label className="control-label" htmlFor="comments">Suggestions, compliments, rants or comments:</label>
-                <input type="text" className="form-control" id="comments" name="comments" value={this.state.comments} onChange={this.handleInputChange} placeholder="Write here any suggestion, compliment, rant or comment you may have..." />                    
+                <textarea className="form-control" rows="5" id="comments" name="comments" value={this.state.comments} onChange={this.handleInputChange} placeholder="Write here any suggestion, compliment, rant or comment you may have..."></textarea>                    
               </div>
               <div className="form-group text-center">
-                <button className="btn" type="submit">Add Review</button>
+                <button className="btn-lg" type="submit"  id="reviews-div">Add Review</button>
               </div>
             </form>
           </div>
