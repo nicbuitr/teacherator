@@ -2,7 +2,6 @@
 var React = require("react");
 var actions = require("../actions/ReviewActions");
 var starCount = 0;
-var criteriaAmount = 5;
 
 module.exports = React.createClass({
     getInitialState:function(){
@@ -36,12 +35,14 @@ module.exports = React.createClass({
         e.preventDefault();
         this.state.totalScore = starCount;
         actions.addReview(this.state);
+        var criterias = this.state.criterias;
 
         //Reinitialize for a new review
         starCount = 0;
         document.getElementById("stars-img").src ="./img/0_star.png";
-        for (var i = 1; i <= this.state.criterias.length; i++) {
+        for (var i = 1; i <= criterias.length; i++) {
           document.getElementById("criteria_"+i).checked = false;
+          criterias[i-1].selection = 0;
         }         
         document.getElementById("comments").value = "";
         this.state.comments = "";
